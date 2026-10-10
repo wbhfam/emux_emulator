@@ -1,0 +1,6 @@
+# стартовый скрипт с ошибками, выполнение должно продолжаться
+ls
+foo bar
+cd a b
+exit now
+ls after errors

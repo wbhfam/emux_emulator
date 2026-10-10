@@ -52,3 +52,23 @@ def test_exit_closes_window(app):
     submit(app, "exit")
     with pytest.raises(tk.TclError):
         app.root.winfo_exists()
+
+
+def test_start_runs_script(app, tmp_path):
+    """Стартовый скрипт выполняется в окне."""
+    path = tmp_path / "s.txt"
+    path.write_text("# c\nls x\nfoo\n", encoding="utf-8")
+    app.start(["[debug] test"], str(path))
+    text = app.output.get("1.0", "end")
+    assert "[debug] test" in text
+    assert "$ ls x" in text
+    assert "script error: line 3: foo" in text
+
+
+def test_exit_in_script_closes_window(app, tmp_path):
+    """exit в скрипте закрывает окно."""
+    path = tmp_path / "s.txt"
+    path.write_text("exit\n", encoding="utf-8")
+    app.start([], str(path))
+    with pytest.raises(tk.TclError):
+        app.root.winfo_exists()

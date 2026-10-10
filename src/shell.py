@@ -25,19 +25,30 @@ class Result:
 class Shell:
     """Состояние оболочки и выполнение команд."""
 
-    def __init__(self):
+    def __init__(self, prompt=None, logger=None):
         """Оболочка работает, пока running равно True."""
         self.running = True
+        self.prompt = prompt
+        self.logger = logger
 
     def get_prompt(self):
-        """Приглашение к вводу."""
-        return DEFAULT_PROMPT
+        """Приглашение к вводу (свое или по умолчанию)."""
+        if self.prompt is None:
+            return DEFAULT_PROMPT
+        return self.prompt
 
     def execute(self, line):
-        """Выполняет строку и возвращает Result."""
+        """Выполняет строку, пишет в лог и возвращает Result."""
         name, args = parse_line(line)
         if name is None:
             return Result("", True)
+        result = self.run_command(name, args)
+        if self.logger is not None:
+            self.logger.log(name, args, result.ok)
+        return result
+
+    def run_command(self, name, args):
+        """Запускает команду по имени."""
         func = COMMANDS.get(name)
         if func is None:
             return Result(f"{name}: command not found", False)
