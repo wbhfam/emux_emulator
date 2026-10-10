@@ -1,0 +1,13 @@
+# все команды этапов 1-3, включая ошибки
+# этап 1: заглушки и exit
+ls
+ls -l some args
+cd
+cd dir
+cd a b
+foo
+exit now
+
+# этап 3: служебная команда для просмотра VFS
+vfs-info
+vfs-info extra

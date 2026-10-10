@@ -1,8 +1,6 @@
 """Тесты параметров командной строки и сборки оболочки."""
 
-import os
-
-from main import (build_shell, format_params, get_vfs_name, parse_args)
+from main import build_shell, format_params, parse_args
 
 
 def test_defaults():
@@ -33,12 +31,6 @@ def test_debug_output_has_all_params():
     assert "(not set)" in text
 
 
-def test_vfs_name():
-    """Имя VFS берется из пути, по умолчанию vfs."""
-    assert get_vfs_name(None) == "vfs"
-    assert get_vfs_name(os.path.join("a", "myvfs")) == "myvfs"
-
-
 def test_build_shell_with_prompt_and_log(tmp_path):
     """Оболочка получает приглашение и логгер."""
     log = tmp_path / "log.xml"
@@ -57,3 +49,27 @@ def test_bad_log_file_is_reported(tmp_path):
     shell, errors = build_shell(parse_args(["--log-file", str(bad)]))
     assert len(errors) == 1 and errors[0].startswith("error:")
     assert shell.logger is None
+
+
+def test_build_shell_loads_vfs():
+    """VFS загружается из папки, имя берется из имени папки."""
+    shell, errors = build_shell(parse_args(
+        ["--vfs-path", "sample_vfs/several"]))
+    assert errors == []
+    assert shell.vfs.name == "several"
+    assert "a.txt" in shell.vfs.root.children
+
+
+def test_missing_vfs_is_reported():
+    """Если VFS не найдена, есть ошибка и пустая VFS."""
+    shell, errors = build_shell(parse_args(["--vfs-path", "no_such_dir"]))
+    assert len(errors) == 1 and "not found" in errors[0]
+    assert shell.vfs.root.children == {}
+    assert shell.vfs.name == "no_such_dir"
+
+
+def test_file_instead_of_vfs_is_reported():
+    """Файл вместо папки это неверный формат VFS."""
+    shell, errors = build_shell(parse_args(
+        ["--vfs-path", "sample_vfs/minimal/hello.txt"]))
+    assert len(errors) == 1 and "wrong format" in errors[0]

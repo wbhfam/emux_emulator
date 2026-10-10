@@ -1,15 +1,14 @@
 """Точка входа эмулятора."""
 
 import argparse
-import os
 import sys
 import tkinter as tk
 
 from gui import EmulatorApp
 from logger import EventLogger, LogError
 from shell import Shell
+from vfs import Vfs, VfsError, load_vfs, vfs_name
 
-DEFAULT_VFS_NAME = "vfs"
 NOT_SET = "(not set)"
 
 
@@ -32,11 +31,15 @@ def format_params(params):
     return lines
 
 
-def get_vfs_name(vfs_path):
-    """Имя VFS для заголовка окна."""
-    if not vfs_path:
-        return DEFAULT_VFS_NAME
-    return os.path.basename(os.path.abspath(vfs_path)) or vfs_path
+def open_vfs(path, errors):
+    """Загружает VFS, при ошибке добавляет текст в errors."""
+    if not path:
+        return Vfs()
+    try:
+        return load_vfs(path)
+    except VfsError as err:
+        errors.append(f"error: {err}")
+        return Vfs(vfs_name(path))
 
 
 def open_logger(path, errors):
@@ -53,8 +56,9 @@ def open_logger(path, errors):
 def build_shell(params):
     """Создает оболочку по параметрам, возвращает ее и ошибки."""
     errors = []
+    vfs = open_vfs(params.vfs_path, errors)
     logger = open_logger(params.log_file, errors)
-    return Shell(params.prompt, logger), errors
+    return Shell(vfs, params.prompt, logger), errors
 
 
 def main(argv=None):
@@ -67,7 +71,7 @@ def main(argv=None):
     for line in errors:
         print(line, file=sys.stderr)
     root = tk.Tk()
-    app = EmulatorApp(root, shell, get_vfs_name(params.vfs_path))
+    app = EmulatorApp(root, shell, shell.vfs.name)
     app.run(debug + errors, params.script)
 
 
