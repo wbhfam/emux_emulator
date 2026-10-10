@@ -6,7 +6,8 @@
 
 ## Состояние проекта
 
-Этапы 1 (REPL), 2 (конфигурация), 3 (VFS) и 4 (основные команды) выполнены.
+Все 5 этапов варианта 6 выполнены (REPL, конфигурация, VFS, основные
+команды, дополнительные команды).
 
 ## Возможности этапа 1
 
@@ -112,6 +113,44 @@ uname: extra operand 'x'
 `startup/stage4_several.txt`, `startup/stage4_deep.txt`; скрипты ОС
 `scripts/stage4_*.sh`.
 
+## Возможности этапа 5
+
+Команды меняют только VFS в памяти, файлы на диске не трогаются.
+
+| команда | описание |
+|---------|----------|
+| `mkdir [-p] путь...` | создать папки; `-p` создает недостающие родительские папки и не ругается на уже существующую папку |
+| `mv источник назначение` | переименовать или перенести файл или папку |
+| `mv источник... папка` | перенести несколько файлов и папок в папку |
+
+Правила `mv` как в UNIX: если назначение - существующая папка, элемент
+кладется внутрь; если такого имени нет, элемент переименовывается; файл
+заменяет файл; папка заменяет только пустую папку. Если перенесли
+текущую папку (или ее родителя), приглашение показывает новый путь.
+
+Ошибки:
+
+```
+mkdir: cannot create directory 'x': File exists
+mkdir: cannot create directory 'a/b': No such file or directory
+mkdir: cannot create directory 'f/b': Not a directory
+mkdir: missing operand
+mv: missing file operand
+mv: missing destination file operand after 'a'
+mv: cannot stat 'a': No such file or directory
+mv: target 'x' is not a directory
+mv: cannot move 'd' to a subdirectory of itself, 'd/e'
+mv: 'a' and 'a' are the same file
+mv: cannot overwrite non-directory 'f' with directory 'd'
+mv: cannot overwrite directory 'd' with non-directory
+mv: cannot move 'd' to 'e': Directory not empty
+```
+
+Скрипты: `startup/stage5.txt` (общий, для любой VFS),
+`startup/stage5_several.txt`, `startup/stage5_deep.txt`,
+`startup/all_commands.txt` (все команды всех этапов); скрипты ОС
+`scripts/stage5_*.sh` и `scripts/all_commands.sh`.
+
 ## Сборка и запуск
 
 Зависимости для запуска не нужны, нужен только tkinter
@@ -120,7 +159,7 @@ uname: extra operand 'x'
 ```
 python3 src/main.py      # или ./run.sh, run.bat в Windows, make run
 python3 src/main.py --vfs-path sample_vfs/several --prompt "emu> " \
-    --log-file logs/log.xml --script startup/stage4.txt
+    --log-file logs/log.xml --script startup/all_commands.txt
 ```
 
 Тесты и проверка стиля:
@@ -157,13 +196,22 @@ several:/docs$ foo
 foo: command not found
 several:/docs$ uname -s
 Linux
+several:/docs$ mkdir -p notes/2026
+several:/docs$ ls
+guide.txt
+notes
+todo.txt
+several:/docs$ mv guide.txt notes/2026
+several:/docs$ ls notes/2026
+guide.txt
 several:/docs$ exit
 ```
 
 ## Структура
 
 ```
-src/         исходный код (main, gui, shell, commands, logger, startup, vfs)
+src/         исходный код (main, gui, shell, commands, edit_commands,
+             common, logger, startup, vfs)
 tests/       тесты
 startup/     стартовые скрипты эмулятора
 scripts/     скрипты ОС для проверки параметров и вариантов VFS

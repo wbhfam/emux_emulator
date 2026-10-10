@@ -1,0 +1,26 @@
+# этап 5: mv и mkdir на VFS several (файлы и папка docs)
+mv a.txt c.txt
+ls
+mv c.txt docs
+ls docs
+mv docs/c.txt /
+mv b.txt notes.txt
+ls -l
+mkdir backup
+mv docs backup
+ls backup
+cd backup/docs
+mkdir -p sub/dir
+mv /backup /archive
+ls
+cd /
+ls archive/docs
+# ошибки
+mv archive/docs notes.txt
+mv c.txt notes.txt archive/docs/guide.txt
+mv archive archive/docs/sub
+mv nothing archive
+mv c.txt .
+mkdir c.txt
+mkdir c.txt/sub
+mkdir -p notes.txt/sub

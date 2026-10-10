@@ -3,43 +3,12 @@
 import getpass
 import platform
 
+from common import CommandError, split_options
+from edit_commands import cmd_mkdir, cmd_mv
+
 DEFAULT_USER = "user"
 TERMINAL = "console"
 UNAME_ORDER = "snrvmo"
-
-
-class CommandError(Exception):
-    """Ошибка выполнения команды."""
-
-    def __init__(self, message, output=""):
-        """Сообщение и вывод, который был до ошибки."""
-        super().__init__(message)
-        self.output = output
-
-
-def split_options(args, allowed, name):
-    """Делит аргументы на буквенные флаги и операнды."""
-    flags = set()
-    operands = []
-    options_end = False
-    for arg in args:
-        if options_end or arg == "-" or not arg.startswith("-"):
-            operands.append(arg)
-        elif arg == "--":
-            options_end = True
-        else:
-            flags.update(check_flags(arg, allowed, name))
-    return flags, operands
-
-
-def check_flags(arg, allowed, name):
-    """Проверяет буквы флагов вида -abc, возвращает их."""
-    if arg.startswith("--"):
-        raise CommandError(f"{name}: unrecognized option '{arg}'")
-    for char in arg[1:]:
-        if char not in allowed:
-            raise CommandError(f"{name}: invalid option -- '{char}'")
-    return arg[1:]
 
 
 def format_entry(node, label, long):
@@ -177,6 +146,8 @@ COMMANDS = {
     "cd": cmd_cd,
     "who": cmd_who,
     "uname": cmd_uname,
+    "mkdir": cmd_mkdir,
+    "mv": cmd_mv,
     "vfs-info": cmd_vfs_info,
     "exit": cmd_exit,
 }

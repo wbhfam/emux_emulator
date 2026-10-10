@@ -1,0 +1,35 @@
+# этап 5: mkdir и mv, подходит для любой VFS
+# mkdir
+mkdir new
+ls
+mkdir new
+mkdir one two three
+ls
+mkdir x/y
+mkdir -p x/y/z
+ls x/y
+mkdir -p x/y
+mkdir /top
+mkdir
+mkdir -z a
+# mv
+mv one uno
+ls
+mv two three new
+ls new
+mv uno new/uno2
+ls new
+mv new/uno2 .
+mv nothing new
+mv new new/inner
+mv uno2 uno2
+mv
+mv uno2
+mv -f a b
+mv uno2 new two
+mv uno2 nothing/file
+mv /top x
+ls x
+cd x/top
+mv /x /y
+ls /

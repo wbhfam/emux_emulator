@@ -1,0 +1,22 @@
+# этап 5: mv и mkdir на глубоком дереве VFS deep
+mkdir -p level1/level2/level3/level4/level5
+cd level1/level2/level3/level4
+ls
+mv deepest.txt level5
+ls level5
+mv level5 /
+cd /
+ls
+mv level5 level1/two
+ls level1/two
+mv level1/top.txt level1/two
+ls -l level1/two
+mv level1/level2/level3 /level3
+ls /level3
+ls level1
+# ошибки
+mv level1 level1/two/level1
+mv level1/level2/level3 /
+mv level1/nothing /level3
+mkdir level1
+mkdir level1/two/new/deeper

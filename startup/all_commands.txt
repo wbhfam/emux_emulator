@@ -1,0 +1,52 @@
+# все команды эмулятора вариант 6 с режимами и ошибками
+# стартовый скрипт, комментарии и пустые строки пропускаются
+
+# служебная команда
+vfs-info
+vfs-info extra
+
+# ls
+ls
+ls -a
+ls -l
+ls -la /
+ls . ..
+ls nothing
+ls -z
+
+# cd
+cd
+cd /
+cd ..
+cd nothing
+cd a b
+
+# who и uname
+who
+who -H
+who -q
+who -x
+uname
+uname -a
+uname -s -r
+uname -z
+
+# mkdir
+mkdir new
+mkdir new
+mkdir -p new/a/b
+mkdir
+ls new
+
+# mv
+mv new renamed
+mv renamed/a /
+ls
+mv nothing renamed
+mv renamed renamed/a
+mv
+mv renamed
+
+# неизвестная команда и exit с аргументом
+foo bar
+exit now
