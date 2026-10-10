@@ -1,0 +1,36 @@
+# этап 4: все режимы ls, cd, who, uname (работает на любой VFS)
+# ls
+ls
+ls -a
+ls -l
+ls -la
+ls /
+ls . ..
+ls no_such_file
+ls -z
+ls --all
+# cd
+cd
+cd /
+cd ..
+cd .
+cd no_such_dir
+cd one two
+# who
+who
+who -H
+who -q
+who -x
+who extra
+# uname
+uname
+uname -s
+uname -n
+uname -r
+uname -v
+uname -m
+uname -o
+uname -a
+uname -sr
+uname -z
+uname extra

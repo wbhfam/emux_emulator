@@ -1,9 +1,9 @@
 """Ядро эмулятора: разбор строки и выполнение команд."""
 
+from datetime import datetime
+
 from commands import COMMANDS, CommandError
 from vfs import Vfs
-
-DEFAULT_PROMPT = "$ "
 
 
 def parse_line(line):
@@ -31,14 +31,16 @@ class Shell:
         self.vfs = Vfs() if vfs is None else vfs
         self.cwd = self.vfs.root
         self.running = True
+        self.start_time = datetime.now()
         self.prompt = prompt
         self.logger = logger
 
     def get_prompt(self):
-        """Приглашение к вводу (свое или по умолчанию)."""
-        if self.prompt is None:
-            return DEFAULT_PROMPT
-        return self.prompt
+        """Приглашение: свое или по умолчанию имя VFS и папка."""
+        if self.prompt is not None:
+            return self.prompt
+        path = self.vfs.path_of(self.cwd)
+        return f"{self.vfs.name}:{path}$ "
 
     def execute(self, line):
         """Выполняет строку, пишет в лог и возвращает Result."""

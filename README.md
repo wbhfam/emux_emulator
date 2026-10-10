@@ -6,7 +6,7 @@
 
 ## Состояние проекта
 
-Этапы 1 (REPL), 2 (конфигурация) и 3 (VFS) выполнены.
+Этапы 1 (REPL), 2 (конфигурация), 3 (VFS) и 4 (основные команды) выполнены.
 
 ## Возможности этапа 1
 
@@ -15,7 +15,8 @@
 - парсер делит ввод на команду и аргументы по пробелам;
 - сообщения об ошибках: неизвестная команда, лишние аргументы;
 - команды:
-  - `ls [args...]` - заглушка, печатает свое имя и аргументы;
+  - `ls [args...]` - заглушка, печатает свое имя и аргументы
+    (настоящая логика появилась в этапе 4);
   - `cd [arg]` - заглушка, печатает свое имя и аргументы
     (больше одного аргумента - ошибка);
   - `exit` - закрывает эмулятор (с аргументами - ошибка).
@@ -83,6 +84,34 @@
 VFS, в том числе с ошибочными путями. Стартовый скрипт для всех команд
 этапов 1-3: `startup/stage3_all.txt`.
 
+## Возможности этапа 4
+
+Приглашение по умолчанию показывает имя VFS и текущую папку, например
+`several:/docs$ `. Если задан `--prompt`, используется он без изменений.
+
+| команда | описание |
+|---------|----------|
+| `ls [-a] [-l] [путь...]` | содержимое папки (по умолчанию текущей). `-a` - показать скрытые файлы (начинаются с точки), `.` и `..`; `-l` - тип (`d` папка, `-` файл) и размер в байтах. Для нескольких путей печатаются заголовки. Для файла печатается его имя |
+| `cd [путь]` | сменить папку; без аргумента - корень; поддерживаются абсолютные и относительные пути, `.` и `..` |
+| `who [-H] [-q]` | пользователь (имя из реальной ОС), терминал и время запуска эмулятора; `-H` - строка заголовка, `-q` - только имя и число пользователей |
+| `uname [-snrvmoa]` | данные о системе из реальной ОС: `-s` имя системы (по умолчанию), `-n` имя узла, `-r` релиз, `-v` версия, `-m` архитектура, `-o` ОС, `-a` все поля |
+| `vfs-info` | служебная команда, сводка и дерево VFS |
+| `exit` | выход |
+
+Ошибки выводятся в стиле UNIX:
+
+```
+ls: cannot access 'x': No such file or directory
+cd: a.txt: Not a directory
+cd: too many arguments
+ls: invalid option -- 'z'
+uname: extra operand 'x'
+```
+
+Скрипты: `startup/stage4.txt` (все режимы команд, подходит для любой VFS),
+`startup/stage4_several.txt`, `startup/stage4_deep.txt`; скрипты ОС
+`scripts/stage4_*.sh`.
+
 ## Сборка и запуск
 
 Зависимости для запуска не нужны, нужен только tkinter
@@ -91,7 +120,7 @@ VFS, в том числе с ошибочными путями. Стартовы
 ```
 python3 src/main.py      # или ./run.sh, run.bat в Windows, make run
 python3 src/main.py --vfs-path sample_vfs/several --prompt "emu> " \
-    --log-file logs/log.xml --script startup/stage3_all.txt
+    --log-file logs/log.xml --script startup/stage4.txt
 ```
 
 Тесты и проверка стиля:
@@ -110,22 +139,25 @@ python3 -m flake8 --max-line-length 80 src tests   # или make lint
 
 ## Пример работы
 
+Запуск: `python3 src/main.py --vfs-path sample_vfs/several`
+
 ```
-$ ls -l docs
-ls -l docs
-$ cd /tmp
-cd /tmp
-$ cd a b
-cd: too many arguments
-$ foo
+several:/$ ls -l
+-       11 a.txt
+-       26 b.txt
+d        0 docs
+-       11 notes.txt
+several:/$ cd docs
+several:/docs$ ls
+guide.txt
+todo.txt
+several:/docs$ cd nothing
+cd: nothing: No such file or directory
+several:/docs$ foo
 foo: command not found
-$ vfs-info
-name: vfs
-directories: 0
-files: 0
-bytes: 0
-/
-$ exit
+several:/docs$ uname -s
+Linux
+several:/docs$ exit
 ```
 
 ## Структура

@@ -1,6 +1,7 @@
 """Тесты стартового скрипта."""
 
 from shell import Shell
+from vfs import Vfs
 from startup import run_script, strip_comment
 
 
@@ -22,8 +23,9 @@ def test_strip_comment():
 
 def test_input_and_output_are_shown(tmp_path):
     """Ввод и вывод показываются как диалог."""
-    out = run(tmp_path, "# start\nls -l\n\ncd a\n")
-    assert out == ["$ ls -l", "ls -l", "$ cd a", "cd a"]
+    shell = Shell(Vfs.from_dict("t", {"a.txt": b"x", "d": {}}))
+    out = run(tmp_path, "# start\nls\n\ncd d\nls\n", shell)
+    assert out == ["t:/$ ls", "a.txt\nd", "t:/$ cd d", "t:/d$ ls"]
 
 
 def test_error_is_reported_and_script_goes_on(tmp_path):
@@ -31,14 +33,14 @@ def test_error_is_reported_and_script_goes_on(tmp_path):
     out = run(tmp_path, "foo\nls\n")
     assert "foo: command not found" in out
     assert "script error: line 1: foo" in out
-    assert "ls" in out
+    assert "vfs:/$ ls" in out
 
 
 def test_exit_stops_script(tmp_path):
     """После exit остальные строки не выполняются."""
     shell = Shell()
     out = run(tmp_path, "exit\nls\n", shell)
-    assert out == ["$ exit"]
+    assert out == ["vfs:/$ exit"]
     assert not shell.running
 
 

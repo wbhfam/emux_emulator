@@ -1,0 +1,12 @@
+# этап 4: работа с VFS several
+ls -l
+cd docs
+ls
+ls -l guide.txt
+cd ..
+ls docs /
+cd a.txt
+cd docs/nothing
+ls -a docs
+cd /docs
+ls ..
