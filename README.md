@@ -1,11 +1,14 @@
-# Эмулятор оболочки UNIX
+ Эмулятор оболочки UNIX
 
 Эмулятор командной оболочки UNIX-подобной ОС с графическим интерфейсом
 (tkinter). Конфигурационное управление, практическая работа 1, вариант 6.
 Нужен Python 3.10+ (tkinter входит в установку Python для Windows).
 
-Запуск тестов на любом этапе: `python -m pytest`
-(перед этим один раз `pip install -r requirements-dev.txt`).
+Каждый этап лежит в своей ветке (`stage-1` ... `stage-5`), `main` содержит
+последний этап. Чтобы запустить нужный этап, сначала переключитесь на его
+ветку: `git checkout stage-2`.
+
+Запуск тестов: `pip install pytest`, затем `python -m pytest`.
 
 ## Этап 1. REPL
 
@@ -23,7 +26,7 @@
 
     python src/main.py
 
-или `run.bat` (Windows), `./run.sh` (Linux/macOS).
+или `run.bat` (Windows), параметры передаются так же: `run.bat --prompt "> "`.
 
 ## Этап 2. Конфигурация
 
@@ -51,8 +54,6 @@
     python src/main.py
     python src/main.py --prompt "emu> " --log-file logs/log.xml --script startup/stage2.txt
 
-Скрипты ОС для проверки всех параметров: `scripts/stage2_*.sh`.
-
 ## Этап 3. VFS
 
 Подключена виртуальная файловая система.
@@ -79,8 +80,6 @@
     python src/main.py --vfs-path sample_vfs/deep
     python src/main.py --vfs-path sample_vfs/deep --script startup/stage3_all.txt
 
-Скрипты ОС со всеми вариантами VFS: `scripts/stage3_*.sh`.
-
 ## Этап 4. Основные команды
 
 Реализована настоящая логика работы с VFS.
@@ -100,8 +99,7 @@
 
     python src/main.py --vfs-path sample_vfs/several --script startup/stage4.txt
 
-Другие скрипты: `startup/stage4_several.txt`, `startup/stage4_deep.txt`,
-скрипты ОС `scripts/stage4_*.sh`.
+Другие скрипты: `startup/stage4_several.txt`, `startup/stage4_deep.txt`.
 
 ## Этап 5. Дополнительные команды
 
@@ -121,12 +119,11 @@
     python src/main.py --vfs-path sample_vfs/deep --script startup/all_commands.txt
 
 `startup/all_commands.txt` проверяет все команды всех этапов.
-Скрипты ОС: `scripts/stage5_*.sh`, `scripts/all_commands.sh`.
 
 ## Структура
 
     src/         исходный код
     tests/       тесты
+    run.bat      запуск (Windows)
     startup/     стартовые скрипты эмулятора
-    scripts/     скрипты ОС (.sh) для проверки параметров и VFS
     sample_vfs/  тестовые VFS
