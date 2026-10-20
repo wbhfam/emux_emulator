@@ -1,6 +1,7 @@
 """Ядро эмулятора: разбор строки и выполнение команд."""
 
 from commands import COMMANDS, CommandError
+from vfs import Vfs
 
 DEFAULT_PROMPT = "$ "
 
@@ -25,8 +26,10 @@ class Result:
 class Shell:
     """Состояние оболочки и выполнение команд."""
 
-    def __init__(self, prompt=None, logger=None):
+    def __init__(self, vfs=None, prompt=None, logger=None):
         """Оболочка работает, пока running равно True."""
+        self.vfs = Vfs() if vfs is None else vfs
+        self.cwd = self.vfs.root
         self.running = True
         self.prompt = prompt
         self.logger = logger

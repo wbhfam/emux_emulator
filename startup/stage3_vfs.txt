@@ -1,0 +1,3 @@
+# показываем содержимое загруженной VFS
+vfs-info
+vfs-info extra

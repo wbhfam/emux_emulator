@@ -54,9 +54,36 @@
     python src/main.py
     python src/main.py --prompt "emu> " --log-file logs/log.xml --script startup/stage2.txt
 
+## Этап 3. VFS
+
+Подключена виртуальная файловая система.
+
+### Возможности
+
+- VFS полностью хранится в памяти
+- источник VFS - папка на диске (`--vfs-path`), файлы читаются как байты
+- без параметра создается пустая VFS по умолчанию
+- ошибки загрузки (папка не найдена, указан файл вместо папки)
+- служебная команда `vfs-info` показывает дерево VFS
+
+### Тестовые VFS
+
+| Папка | Описание |
+|-------|----------|
+| `sample_vfs/minimal` | минимальная VFS (один файл) |
+| `sample_vfs/several` | несколько файлов и папка |
+| `sample_vfs/deep` | вложенность 4 уровня |
+
+### Запуск
+
+    python src/main.py
+    python src/main.py --vfs-path sample_vfs/deep
+    python src/main.py --vfs-path sample_vfs/deep --script startup/stage3_all.txt
+
 ## Структура
 
     src/         исходный код
     tests/       тесты
     run.bat      запуск (Windows)
     startup/     стартовые скрипты эмулятора
+    sample_vfs/  тестовые VFS
