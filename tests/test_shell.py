@@ -26,18 +26,6 @@ def test_unknown_command():
     assert result.output == "foo: command not found"
 
 
-def test_ls_stub_prints_name_and_args():
-    """ls пока печатает свое имя и аргументы."""
-    result = Shell().execute("ls -l dir")
-    assert result.ok and result.output == "ls -l dir"
-
-
-def test_cd_stub_prints_name_and_args():
-    """cd пока печатает свое имя и аргументы."""
-    result = Shell().execute("cd a")
-    assert result.ok and result.output == "cd a"
-
-
 def test_cd_too_many_arguments():
     """cd с двумя аргументами это ошибка."""
     result = Shell().execute("cd a b")

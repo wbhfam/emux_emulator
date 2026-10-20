@@ -80,6 +80,27 @@
     python src/main.py --vfs-path sample_vfs/deep
     python src/main.py --vfs-path sample_vfs/deep --script startup/stage3_all.txt
 
+## Этап 4. Основные команды
+
+Реализована настоящая логика работы с VFS.
+
+### Команды
+
+| Команда | Описание |
+|---------|----------|
+| `ls [-a] [-l] [путь...]` | содержимое директории VFS |
+| `cd [путь]` | смена директории (`..`, абсолютные и относительные пути) |
+| `who [-H] [-q]` | текущий пользователь |
+| `uname [-snrvmoa]` | информация о системе |
+
+Приглашение по умолчанию показывает имя VFS и текущую папку.
+
+### Запуск
+
+    python src/main.py --vfs-path sample_vfs/several --script startup/stage4.txt
+
+Другие скрипты: `startup/stage4_several.txt`, `startup/stage4_deep.txt`.
+
 ## Структура
 
     src/         исходный код

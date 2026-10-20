@@ -1,0 +1,12 @@
+# этап 4: переходы по глубокому дереву VFS deep
+ls
+cd level1
+ls -l
+cd level2/level3/level4
+ls
+cd ../..
+ls
+cd /level1/level2
+ls ../..
+cd
+ls level1/level2/level3

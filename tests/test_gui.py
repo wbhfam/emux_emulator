@@ -35,10 +35,10 @@ def test_title_has_vfs_name(app):
 
 def test_command_output_is_shown(app):
     """Ввод и вывод команды показываются в окне."""
-    submit(app, "ls a b")
+    submit(app, "vfs-info")
     text = app.output.get("1.0", "end")
-    assert "$ ls a b" in text
-    assert "ls a b\n" in text
+    assert "vfs:/$ vfs-info" in text
+    assert "directories: 0" in text
 
 
 def test_error_is_shown(app):
@@ -57,11 +57,11 @@ def test_exit_closes_window(app):
 def test_start_runs_script(app, tmp_path):
     """Стартовый скрипт выполняется в окне."""
     path = tmp_path / "s.txt"
-    path.write_text("# c\nls x\nfoo\n", encoding="utf-8")
+    path.write_text("# c\ncd\nfoo\n", encoding="utf-8")
     app.start(["[debug] test"], str(path))
     text = app.output.get("1.0", "end")
     assert "[debug] test" in text
-    assert "$ ls x" in text
+    assert "vfs:/$ cd" in text
     assert "script error: line 3: foo" in text
 
 
