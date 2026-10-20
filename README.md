@@ -101,6 +101,25 @@
 
 Другие скрипты: `startup/stage4_several.txt`, `startup/stage4_deep.txt`.
 
+## Этап 5. Дополнительные команды
+
+Команды, изменяющие VFS (только в памяти, диск не трогается).
+
+### Команды
+
+| Команда | Описание |
+|---------|----------|
+| `mkdir [-p] путь...` | создает директории |
+| `mv источник назначение` | переименовывает или переносит файл/папку |
+| `mv источник... папка` | переносит несколько элементов в папку |
+
+### Запуск
+
+    python src/main.py --vfs-path sample_vfs/several --script startup/stage5_several.txt
+    python src/main.py --vfs-path sample_vfs/deep --script startup/all_commands.txt
+
+`startup/all_commands.txt` проверяет все команды всех этапов.
+
 ## Структура
 
     src/         исходный код
