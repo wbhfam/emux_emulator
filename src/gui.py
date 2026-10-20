@@ -3,6 +3,8 @@
 import tkinter as tk
 from tkinter import scrolledtext
 
+from startup import run_script
+
 TITLE_TEMPLATE = "Эмулятор - [{}]"
 FONT = ("Courier", 11)
 
@@ -55,6 +57,17 @@ class EmulatorApp:
         if not self.shell.running:
             self.root.destroy()
 
-    def run(self):
+    def start(self, lines, script_path):
+        """Показывает стартовые строки и выполняет скрипт."""
+        for line in lines:
+            self.print_text(line)
+        if script_path:
+            run_script(self.shell, script_path, self.print_text)
+            self.update_prompt()
+            if not self.shell.running:
+                self.root.destroy()
+
+    def run(self, lines=(), script_path=None):
         """Запускает главный цикл окна."""
+        self.root.after(0, self.start, lines, script_path)
         self.root.mainloop()

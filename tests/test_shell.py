@@ -58,3 +58,30 @@ def test_exit_with_arguments_is_error():
     result = shell.execute("exit now")
     assert not result.ok
     assert shell.running
+
+
+class FakeLogger:
+    """Логгер, который просто запоминает вызовы."""
+
+    def __init__(self):
+        """Пустой список событий."""
+        self.events = []
+
+    def log(self, command, args, ok):
+        """Запоминает событие."""
+        self.events.append((command, args, ok))
+
+
+def test_commands_are_logged():
+    """В лог попадают и удачные, и неудачные вызовы."""
+    logger = FakeLogger()
+    shell = Shell(logger=logger)
+    shell.execute("ls -l")
+    shell.execute("foo")
+    shell.execute("")
+    assert logger.events == [("ls", ["-l"], True), ("foo", [], False)]
+
+
+def test_custom_prompt():
+    """Можно задать свое приглашение."""
+    assert Shell(prompt="emu> ").get_prompt() == "emu> "
