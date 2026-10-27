@@ -3,7 +3,7 @@
 import os
 import re
 import sys
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as xml_tree
 from datetime import datetime
 
 ROOT_TAG = "log"
@@ -34,10 +34,10 @@ class EventLogger:
     def load(self):
         """Загружает корень XML из файла, если файл уже есть."""
         if not os.path.exists(self.path):
-            return ET.Element(ROOT_TAG)
+            return xml_tree.Element(ROOT_TAG)
         try:
-            root = ET.parse(self.path).getroot()
-        except (ET.ParseError, OSError) as err:
+            root = xml_tree.parse(self.path).getroot()
+        except (xml_tree.ParseError, OSError) as err:
             raise LogError(f"cannot read log file '{self.path}': {err}")
         if root.tag != ROOT_TAG:
             raise LogError(f"wrong log format in '{self.path}'")
@@ -48,20 +48,20 @@ class EventLogger:
         folder = os.path.dirname(self.path)
         if folder:
             os.makedirs(folder, exist_ok=True)
-        ET.indent(self.root)
-        tree = ET.ElementTree(self.root)
+        xml_tree.indent(self.root)
+        tree = xml_tree.ElementTree(self.root)
         tree.write(self.path, encoding="utf-8", xml_declaration=True)
 
     def log(self, command, args, ok):
         """Добавляет событие вызова команды."""
-        event = ET.SubElement(self.root, "event")
+        event = xml_tree.SubElement(self.root, "event")
         now = datetime.now().isoformat(timespec="seconds")
-        ET.SubElement(event, "datetime").text = now
-        ET.SubElement(event, "command").text = clean(command)
-        items = ET.SubElement(event, "args")
+        xml_tree.SubElement(event, "datetime").text = now
+        xml_tree.SubElement(event, "command").text = clean(command)
+        items = xml_tree.SubElement(event, "args")
         for arg in args:
-            ET.SubElement(items, "arg").text = clean(arg)
-        ET.SubElement(event, "status").text = "ok" if ok else "error"
+            xml_tree.SubElement(items, "arg").text = clean(arg)
+        xml_tree.SubElement(event, "status").text = "ok" if ok else "error"
         try:
             self.save()
         except OSError as err:
