@@ -117,13 +117,22 @@ def test_no_magic_numbers_in_compare():
                     assert not bad, f"{path.name}:{node.lineno}"
 
 
+def node_names(node):
+    """Имена функций, переменных и псевдонимов, заданные узлом."""
+    if isinstance(node, ast.FunctionDef):
+        return [node.name]
+    if isinstance(node, ast.alias):
+        return [node.asname] if node.asname else []
+    if isinstance(node, ast.Name) and is_store(node):
+        return [node.id]
+    return []
+
+
 def test_names_follow_pep8():
-    """Имена функций, классов и переменных по PEP8."""
+    """Имена классов, функций, переменных и псевдонимов по PEP8."""
     for path in python_files():
         for node in ast.walk(parse(path)):
             if isinstance(node, ast.ClassDef):
                 assert CLASS_NAME.match(node.name), node.name
-            if isinstance(node, ast.FunctionDef):
-                assert VAR_NAME.match(node.name), node.name
-            if isinstance(node, ast.Name) and is_store(node):
-                assert VAR_NAME.match(node.id), node.id
+            for name in node_names(node):
+                assert VAR_NAME.match(name), f"{path.name}:{name}"
