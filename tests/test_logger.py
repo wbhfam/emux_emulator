@@ -1,6 +1,6 @@
 """Тесты XML-логирования."""
 
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as xml_tree
 from datetime import datetime
 
 import pytest
@@ -10,7 +10,7 @@ from logger import EventLogger, LogError
 
 def read_events(path):
     """Список событий из лог-файла."""
-    return ET.parse(path).getroot().findall("event")
+    return xml_tree.parse(path).getroot().findall("event")
 
 
 def test_event_has_command_args_status_and_time(tmp_path):
